@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AccessiMind User Guide — Learn how to use AccessiMind, the AI-powered accessibility analysis tool for Web, Android, and iOS applications." />
+  <meta name="author" content="AccessiMind Team" />
+  <meta name="robots" content="index, follow" />
+  <title>AccessiMind — User Guide</title>
+
+  <!-- Google Fonts: Inter + Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ================================================================
+       DESIGN TOKENS
+       ================================================================ */
+    :root {
+      --color-bg: #0f172a;
+      --color-bg-alt: #1e293b;
+      --color-surface: #1e293b;
+      --color-surface-hover: #334155;
+      --color-border: #334155;
+      --color-text: #f1f5f9;
+      --color-text-secondary: #94a3b8;
+      --color-primary: #38bdf8;
+      --color-primary-dark: #0284c7;
+      --color-accent: #a78bfa;
+      --color-accent-light: #c4b5fd;
+      --color-success: #34d399;
+      --color-warning: #fbbf24;
+      --color-error: #f87171;
+      --color-info: #60a5fa;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Fira Code', 'Cascadia Code', monospace;
+      --radius-sm: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --focus-ring: 0 0 0 3px rgba(56, 189, 248, 0.5);
+      --max-width: 960px;
+    }
+
+    /* ================================================================
+       HIGH CONTRAST MODE (toggle via button)
+       ================================================================ */
+    html.high-contrast {
+      --color-bg: #000000;
+      --color-bg-alt: #111111;
+      --color-surface: #111111;
+      --color-surface-hover: #222222;
+      --color-border: #ffffff;
+      --color-text: #ffffff;
+      --color-text-secondary: #e0e0e0;
+      --color-primary: #00e5ff;
+      --color-accent: #d1c4e9;
+      --focus-ring: 0 0 0 4px #ffff00;
+    }
+
+    /* ================================================================
+       RESET & BASE
+       ================================================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ================================================================
+       SKIP LINK
+       ================================================================ */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--color-primary);
+      color: var(--color-bg);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      z-index: 10000;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: top var(--transition);
+    }
+    .skip-link:focus {
+      top: 1rem;
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    /* ================================================================
+       FOCUS STYLES
+       ================================================================ */
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: var(--radius-sm);
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    /* ================================================================
+       VISUALLY HIDDEN (SR-ONLY)
+       ================================================================ */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ================================================================
+       LAYOUT
+       ================================================================ */
+    .page-wrapper {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .site-header {
+      background: linear-gradient(135deg, var(--color-bg-alt) 0%, var(--color-bg) 100%);
+      border-bottom: 1px solid var(--color-border);
+      padding: 2rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+    }
+    .header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #fff;
+      font-weight: 800;
+    }
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* ================================================================
+       BUTTONS
+       ================================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      line-height: 1.4;
+      min-height: 44px;
+      min-width: 44px;
+      justify-content: center;
+    }
+    .btn:hover,
+    .btn:focus-visible {
+      background: var(--color-surface-hover);
+      border-color: var(--color-primary);
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      border: none;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .btn-primary:hover,
+    .btn-primary:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
+    }
+    .btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    /* ================================================================
+       TABLE OF CONTENTS
+       ================================================================ */
+    .toc {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin: 2.5rem 0;
+    }
+    .toc h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--color-primary);
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+      padding-left: 0;
+    }
+    .toc li {
+      counter-increment: toc-counter;
+      margin-bottom: 0.5rem;
+    }
+    .toc li::before {
+      content: counter(toc-counter) ".";
+      color: var(--color-accent);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      margin-right: 0.5rem;
+      font-size: 0.875rem;
+    }
+    .toc a {
+      color: var(--color-text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color var(--transition);
+      border-bottom: 1px solid transparent;
+    }
+    .toc a:hover,
+    .toc a:focus-visible {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* ================================================================
+       HEADINGS
+       ================================================================ */
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--color-border);
+      scroll-margin-top: 6rem;
+    }
+    h2 .heading-num {
+      color: var(--color-primary);
+      font-family: var(--font-mono);
+      margin-right: 0.5rem;
+    }
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      margin: 2rem 0 1rem;
+      scroll-margin-top: 6rem;
+    }
+    h4 {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    /* ================================================================
+       PARAGRAPH & INLINE
+       ================================================================ */
+    p {
+      margin-bottom: 1rem;
+      color: var(--color-text-secondary);
+    }
+    strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+    a {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      color: var(--color-accent-light);
+    }
+    code {
+      font-family: var(--font-mono);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 0.15rem 0.45rem;
+      font-size: 0.875em;
+      color: var(--color-primary);
+    }
+
+    /* ================================================================
+       CARDS / SECTIONS
+       ================================================================ */
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .card:hover {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 1px var(--color-primary), var(--shadow-md);
+    }
+
+    /* ================================================================
+       LISTS
+       ================================================================ */
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+      color: var(--color-text-secondary);
+    }
+    li strong {
+      color: var(--color-text);
+    }
+
+    /* ================================================================
+       STEP CARDS
+       ================================================================ */
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: flex-start;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .step-content {
+      flex: 1;
+    }
+    .step-content h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    .step-content p {
+      margin-bottom: 0;
+    }
+
+    /* ================================================================
+       TABLES
+       ================================================================ */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9375rem;
+    }
+    thead {
+      background: var(--color-bg);
+    }
+    th {
+      text-align: left;
+      padding: 1rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      border-bottom: 2px solid var(--color-border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      vertical-align: top;
+    }
+    tbody tr:hover {
+      background: var(--color-surface-hover);
+    }
+    caption {
+      caption-side: top;
+      text-align: left;
+      padding: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+      font-size: 1rem;
+    }
+
+    /* ================================================================
+       ALERT BOXES
+       ================================================================ */
+    .alert {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-md);
+      margin: 1.5rem 0;
+      border-left: 4px solid transparent;
+    }
+    .alert-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .alert-info {
+      background: rgba(96, 165, 250, 0.1);
+      border-left-color: var(--color-info);
+    }
+    .alert-info .alert-icon { color: var(--color-info); }
+    .alert-warning {
+      background: rgba(251, 191, 36, 0.1);
+      border-left-color: var(--color-warning);
+    }
+    .alert-warning .alert-icon { color: var(--color-warning); }
+    .alert-success {
+      background: rgba(52, 211, 153, 0.1);
+      border-left-color: var(--color-success);
+    }
+    .alert-success .alert-icon { color: var(--color-success); }
+    .alert-error {
+      background: rgba(248, 113, 113, 0.1);
+      border-left-color: var(--color-error);
+    }
+    .alert-error .alert-icon { color: var(--color-error); }
+
+    /* ================================================================
+       KBD KEYBOARD SHORTCUTS
+       ================================================================ */
+    kbd {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: inset 0 -2px 0 var(--color-border);
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+
+    /* ================================================================
+       FOOTER
+       ================================================================ */
+    .site-footer {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      border-top: 1px solid var(--color-border);
+      margin-top: 4rem;
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+    }
+    .site-footer a {
+      color: var(--color-primary);
+    }
+    .wcag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 0.5rem 1rem;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: var(--color-success);
+      font-size: 0.875rem;
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 1.75rem;
+      }
+      h2 {
+        font-size: 1.375rem;
+      }
+      .step {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* ================================================================
+       REDUCED MOTION
+       ================================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ================================================================
+       PRINT
+       ================================================================ */
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+      }
+      .site-header,
+      .skip-link,
+      .header-actions,
+      .btn {
+        display: none;
+      }
+      .card {
+        border: 1px solid #ccc;
+        box-shadow: none;
+      }
+      a {
+        color: #000;
+        text-decoration: underline;
+      }
+      a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #555;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip Navigation -->
+  <a href="#main-content" class="skip-link" id="skip-link">Skip to Content</a>
+
+  <!-- ================================================================
+       HEADER
+       ================================================================ -->
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-icon" aria-hidden="true">A</div>
+        <span class="logo-text">AccessiMind</span>
+      </div>
+      <div class="header-actions">
+        <a href="user-guide-tr.html" class="btn btn-sm" hreflang="tr" aria-label="Türkçe sürüme geçiş">
+          🇹🇷 Türkçe
+        </a>
+        <button type="button" class="btn btn-sm" id="toggle-contrast" aria-pressed="false"
+                aria-label="Toggle High Contrast Mode">
+          ◐ Contrast
+        </button>
+        <button type="button" class="btn btn-sm" id="btn-print" aria-label="Print this page">
+          🖨 Print
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================
+       MAIN
+       ================================================================ -->
+  <main id="main-content" class="page-wrapper" role="main">
+
+    <!-- Page Title -->
+    <h1>AccessiMind User Guide</h1>
+    <p style="font-size: 1.125rem; color: var(--color-text); margin-bottom: 0.25rem;">
+      <strong>AI-Powered Accessibility Analysis for Web, Android &amp; iOS</strong>
+    </p>
+    <p style="font-size: 0.875rem;">Version 1.0 &middot; Last updated: March 2026 &middot; WCAG 2.2 AA Conformance</p>
+
+    <!-- ============================================================
+         TABLE OF CONTENTS
+         ============================================================ -->
+    <nav class="toc" aria-labelledby="toc-heading">
+      <h2 id="toc-heading">Table of Contents</h2>
+      <ol>
+        <li><a href="#about">About AccessiMind</a></li>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#interface">Interface Overview</a></li>
+        <li><a href="#analysis">Running an Analysis</a></li>
+        <li><a href="#results">Understanding Results</a></li>
+        <li><a href="#projects">Project Management</a></li>
+        <li><a href="#settings">Settings &amp; Configuration</a></li>
+        <li><a href="#keyboard">Keyboard Shortcuts &amp; Accessibility</a></li>
+        <li><a href="#faq">FAQ &amp; Troubleshooting</a></li>
+        <li><a href="#privacy">Privacy &amp; Data Security</a></li>
+      </ol>
+    </nav>
+
+    <!-- ============================================================
+         1. ABOUT
+         ============================================================ -->
+    <section aria-labelledby="about">
+      <h2 id="about"><span class="heading-num">1.</span> About AccessiMind</h2>
+      <div class="card">
+        <p>
+          <strong>AccessiMind</strong> is an intelligent desktop application that analyzes screen recordings 
+          of web, Android, and iOS applications for accessibility conformance. Powered by Google's Gemini AI 
+          models, it acts as a virtual accessibility expert — identifying WCAG violations, UX issues, and 
+          navigation barriers automatically.
+        </p>
+        <h3>Key Capabilities</h3>
+        <ul>
+          <li><strong>AI Vision Analysis:</strong> Upload screen recordings (MP4/MOV) and receive instant, expert-level feedback on accessibility issues.</li>
+          <li><strong>Multi-Platform Rules:</strong>
+            <ul>
+              <li>🌐 <strong>Web:</strong> WCAG 2.1/2.2 AA Conformance analysis</li>
+              <li>🤖 <strong>Android:</strong> Material Design Accessibility verification</li>
+              <li>🍎 <strong>iOS:</strong> Human Interface Guidelines (HIG) accessibility checks</li>
+            </ul>
+          </li>
+          <li><strong>Smart Reporting:</strong> Generates detailed Jira tickets with severity levels (Critical, High, Medium, Low).</li>
+          <li><strong>AI Chat:</strong> Ask follow-up questions to the AI accessibility expert about any finding.</li>
+          <li><strong>Project Management:</strong> Organize analyses into projects to track progress over time.</li>
+          <li><strong>Bilingual UI:</strong> Full Turkish and English interface support.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. GETTING STARTED
+         ============================================================ -->
+    <section aria-labelledby="getting-started">
+      <h2 id="getting-started"><span class="heading-num">2.</span> Getting Started</h2>
+
+      <h3>System Requirements</h3>
+      <div class="card">
+        <ul>
+          <li><strong>Operating System:</strong> Windows 10/11 (64-bit)</li>
+          <li><strong>RAM:</strong> 4 GB minimum (8 GB recommended)</li>
+          <li><strong>Disk Space:</strong> 500 MB free space</li>
+          <li><strong>Internet:</strong> Required for AI analysis (Gemini API)</li>
+        </ul>
+      </div>
+
+      <h3>Installation &amp; First Launch</h3>
+      <div class="step" role="group" aria-label="Step 1">
+        <div class="step-num" aria-hidden="true">1</div>
+        <div class="step-content">
+          <h4>Download the Application</h4>
+          <p>Download the portable <code>AccessiMind.exe</code> file. No installation is required — simply run the executable.</p>
+        </div>
+      </div>
+      <div class="step" role="group" aria-label="Step 2">
+        <div class="step-num" aria-hidden="true">2</div>
+        <div class="step-content">
+          <h4>Get a Gemini API Key</h4>
+          <p>Visit <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer">Google AI Studio</a> to create a free API key. This key powers the AI analysis engine.</p>
+        </div>
+      </div>
+      <div class="step" role="group" aria-label="Step 3">
+        <div class="step-num" aria-hidden="true">3</div>
+        <div class="step-content">
+          <h4>Configure Settings</h4>
+          <p>Navigate to the <strong>Settings</strong> tab, enter your API key, select your preferred AI model, and save.</p>
+        </div>
+      </div>
+      <div class="step" role="group" aria-label="Step 4">
+        <div class="step-num" aria-hidden="true">4</div>
+        <div class="step-content">
+          <h4>You're Ready!</h4>
+          <p>Upload a screen recording and start your first accessibility analysis.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. INTERFACE OVERVIEW
+         ============================================================ -->
+    <section aria-labelledby="interface">
+      <h2 id="interface"><span class="heading-num">3.</span> Interface Overview</h2>
+      <div class="card">
+        <p>AccessiMind features a tabbed navigation with five main sections:</p>
+        <div class="table-wrapper">
+          <table>
+            <caption class="sr-only">Main navigation tabs and their descriptions</caption>
+            <thead>
+              <tr>
+                <th scope="col">Tab</th>
+                <th scope="col">Icon</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Accessibility Expert</strong></td>
+                <td aria-hidden="true">🤖</td>
+                <td>Primary analysis workspace — upload videos, select platform, run AI analysis, and view results.</td>
+              </tr>
+              <tr>
+                <td><strong>Projects</strong></td>
+                <td aria-hidden="true">📁</td>
+                <td>Create and manage projects to organize your accessibility analyses by application or feature.</td>
+              </tr>
+              <tr>
+                <td><strong>Recent Analysis</strong></td>
+                <td aria-hidden="true">📜</td>
+                <td>View history of all past analyses, re-examine findings, export or delete records.</td>
+              </tr>
+              <tr>
+                <td><strong>Settings</strong></td>
+                <td aria-hidden="true">⚙️</td>
+                <td>Configure API key, AI model, language, output detail level, and accessibility preferences.</td>
+              </tr>
+              <tr>
+                <td><strong>Help</strong></td>
+                <td aria-hidden="true">❓</td>
+                <td>Quick-start guide and reference information.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. RUNNING AN ANALYSIS
+         ============================================================ -->
+    <section aria-labelledby="analysis">
+      <h2 id="analysis"><span class="heading-num">4.</span> Running an Analysis</h2>
+
+      <h3>Step-by-Step Workflow</h3>
+
+      <div class="step" role="group" aria-label="Analysis Step 1">
+        <div class="step-num" aria-hidden="true">1</div>
+        <div class="step-content">
+          <h4>Select Target Platform</h4>
+          <p>Choose <strong>Web</strong>, <strong>Android</strong>, or <strong>iOS</strong> from the platform selector. Each platform loads specialized accessibility rules and expert prompts.</p>
+        </div>
+      </div>
+
+      <div class="step" role="group" aria-label="Analysis Step 2">
+        <div class="step-num" aria-hidden="true">2</div>
+        <div class="step-content">
+          <h4>Upload Screen Recording</h4>
+          <p>Drag and drop a video file (MP4, MOV) into the upload area or click to browse. The video should capture the application's user interface and interactions you want analyzed.</p>
+        </div>
+      </div>
+
+      <div class="step" role="group" aria-label="Analysis Step 3">
+        <div class="step-num" aria-hidden="true">3</div>
+        <div class="step-content">
+          <h4>Assign to a Project (Optional)</h4>
+          <p>Select an existing project from the dropdown or leave as "No Project" for standalone analysis.</p>
+        </div>
+      </div>
+
+      <div class="step" role="group" aria-label="Analysis Step 4">
+        <div class="step-num" aria-hidden="true">4</div>
+        <div class="step-content">
+          <h4>Generate Expert Report</h4>
+          <p>Click the <strong>"Generate Expert Report"</strong> button. The AI will process your video through five stages:</p>
+          <ol>
+            <li>Preparing the video</li>
+            <li>Uploading to the AI engine</li>
+            <li>Analyzing visual elements</li>
+            <li>Generating expert insights</li>
+            <li>Finalizing the Jira report</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="alert alert-info" role="note">
+        <span class="alert-icon" aria-hidden="true">ℹ️</span>
+        <div>
+          <strong>Tip:</strong> For best results, record interactions like navigation, form filling, button presses, and scrolling. A 30–90 second video usually provides the most actionable results.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. UNDERSTANDING RESULTS
+         ============================================================ -->
+    <section aria-labelledby="results">
+      <h2 id="results"><span class="heading-num">5.</span> Understanding Results</h2>
+      <div class="card">
+        <p>Each analysis generates a Jira-formatted ticket containing:</p>
+        <ul>
+          <li><strong>Title:</strong> A concise name for the finding.</li>
+          <li><strong>Description:</strong> Detailed explanation of the accessibility issue.</li>
+          <li><strong>WCAG Criteria:</strong> The specific WCAG success criteria violated.</li>
+          <li><strong>Conformance Level:</strong> The WCAG conformance level (A, AA, AAA).</li>
+          <li><strong>Observed Results:</strong> What the AI detected in the video.</li>
+          <li><strong>Expected Results:</strong> The correct, accessible behavior.</li>
+          <li><strong>Test Steps:</strong> Steps to reproduce and verify the issue.</li>
+          <li><strong>Impact Level:</strong> Critical, High, Medium, or Low.</li>
+          <li><strong>Remediation Priority:</strong> Suggested fix priority ranking.</li>
+        </ul>
+
+        <h3>Severity Levels</h3>
+        <div class="table-wrapper">
+          <table>
+            <caption class="sr-only">Severity levels and their meanings</caption>
+            <thead>
+              <tr>
+                <th scope="col">Severity</th>
+                <th scope="col">Meaning</th>
+                <th scope="col">Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color: var(--color-error);">Critical</strong></td>
+                <td>Blocks major functionality for users with disabilities</td>
+                <td>Form submit button not keyboard-accessible</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--color-warning);">High</strong></td>
+                <td>Significant barrier; workaround may exist</td>
+                <td>Missing alt text on informational images</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--color-info);">Medium</strong></td>
+                <td>Moderate impact; affects user experience</td>
+                <td>Insufficient color contrast ratio</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--color-text-secondary);">Low</strong></td>
+                <td>Minor issue; best practice recommendation</td>
+                <td>Missing skip navigation link</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>Exporting &amp; Sharing</h3>
+      <div class="card">
+        <ul>
+          <li><strong>Copy as Markdown:</strong> Copy the entire Jira ticket in Markdown format to paste into Jira, Confluence, or GitHub Issues.</li>
+          <li><strong>Export to Text:</strong> Download the report as a <code>.txt</code> file for offline review.</li>
+          <li><strong>AI Chat:</strong> Ask follow-up questions about any finding by typing in the chat panel below the report.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. PROJECT MANAGEMENT
+         ============================================================ -->
+    <section aria-labelledby="projects">
+      <h2 id="projects"><span class="heading-num">6.</span> Project Management</h2>
+      <div class="card">
+        <p>Projects help you organize accessibility analyses by application, feature, or sprint.</p>
+        <h3>Creating a Project</h3>
+        <ol>
+          <li>Navigate to the <strong>Projects</strong> tab.</li>
+          <li>Click <strong>"New Project"</strong>.</li>
+          <li>Enter a project name (e.g., "E-commerce Mobile App") and an optional description.</li>
+          <li>Click <strong>"Create"</strong>.</li>
+        </ol>
+        <h3>Managing Projects</h3>
+        <ul>
+          <li><strong>View Findings:</strong> Click on a project card to view all related analysis findings.</li>
+          <li><strong>Edit Project:</strong> Use the edit button to update name or description.</li>
+          <li><strong>Delete Project:</strong> Remove a project and all associated findings (with confirmation dialog).</li>
+        </ul>
+        <h3>Assigning Analyses to Projects</h3>
+        <p>When running an analysis from the <strong>Accessibility Expert</strong> tab, select a project from the dropdown before starting. The results will be automatically linked to that project.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. SETTINGS
+         ============================================================ -->
+    <section aria-labelledby="settings">
+      <h2 id="settings"><span class="heading-num">7.</span> Settings &amp; Configuration</h2>
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <caption class="sr-only">Available settings and their descriptions</caption>
+            <thead>
+              <tr>
+                <th scope="col">Setting</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Language</strong></td>
+                <td>Switch interface between Turkish (TR) and English (EN). All labels, menus, and reports adapt to the selected language.</td>
+              </tr>
+              <tr>
+                <td><strong>Gemini API Key</strong></td>
+                <td>Your personal API key from Google AI Studio. Required for analysis. Stored locally and never transmitted elsewhere.</td>
+              </tr>
+              <tr>
+                <td><strong>AI Model</strong></td>
+                <td>Select the Gemini model to use (e.g., Gemini 3.0 Flash, Gemini 3.0 Pro). You can also enter a custom model ID.</td>
+              </tr>
+              <tr>
+                <td><strong>Output Detail Level</strong></td>
+                <td>
+                  <ul style="margin-bottom:0">
+                    <li><strong>Concise:</strong> Short, high-level summary of findings.</li>
+                    <li><strong>Normal:</strong> Balanced detail with actionable recommendations.</li>
+                    <li><strong>Detailed:</strong> Educational, comprehensive reports with deep explanations.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>High Contrast Mode</strong></td>
+                <td>Enables a higher-contrast color scheme for improved readability (WCAG AAA level contrast).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="alert alert-warning" role="note">
+        <span class="alert-icon" aria-hidden="true">⚠️</span>
+        <div>
+          <strong>Important:</strong> Always click <strong>"Save"</strong> after making changes. Settings are stored locally on your machine.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. KEYBOARD SHORTCUTS & ACCESSIBILITY
+         ============================================================ -->
+    <section aria-labelledby="keyboard">
+      <h2 id="keyboard"><span class="heading-num">8.</span> Keyboard Shortcuts &amp; Accessibility</h2>
+      <div class="card">
+        <p>AccessiMind is designed with WCAG 2.2 AA conformance. All features are fully accessible via keyboard and screen readers.</p>
+
+        <h3>Keyboard Navigation</h3>
+        <div class="table-wrapper">
+          <table>
+            <caption class="sr-only">Keyboard shortcuts reference</caption>
+            <thead>
+              <tr>
+                <th scope="col">Action</th>
+                <th scope="col">Shortcut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Skip to main content</td>
+                <td><kbd>Tab</kbd> (first element focus)</td>
+              </tr>
+              <tr>
+                <td>Navigate between tabs</td>
+                <td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+              </tr>
+              <tr>
+                <td>Select a tab</td>
+                <td><kbd>Enter</kbd> or <kbd>Space</kbd></td>
+              </tr>
+              <tr>
+                <td>Navigate within lists/cards</td>
+                <td><kbd>Arrow Keys</kbd></td>
+              </tr>
+              <tr>
+                <td>Close modals/dialogs</td>
+                <td><kbd>Escape</kbd></td>
+              </tr>
+              <tr>
+                <td>Submit forms</td>
+                <td><kbd>Enter</kbd></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Screen Reader Support</h3>
+        <ul>
+          <li>All interactive elements have descriptive <code>aria-label</code> attributes.</li>
+          <li>Live regions (<code>aria-live</code>) announce analysis progress and status changes.</li>
+          <li>Semantic HTML5 landmarks (<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>) are used throughout.</li>
+          <li>Focus traps are implemented for all dialogs and modals.</li>
+        </ul>
+
+        <h3>Visual Accessibility</h3>
+        <ul>
+          <li><strong>High Contrast Mode:</strong> Toggleable from Settings for users who need enhanced contrast.</li>
+          <li><strong>Focus Indicators:</strong> All interactive elements display a visible <code>:focus-visible</code> ring.</li>
+          <li><strong>Scalable Text:</strong> All text uses <code>rem</code> units and scales with browser zoom settings.</li>
+          <li><strong>Reduced Motion:</strong> Animations respect <code>prefers-reduced-motion</code> preferences.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         9. FAQ
+         ============================================================ -->
+    <section aria-labelledby="faq">
+      <h2 id="faq"><span class="heading-num">9.</span> FAQ &amp; Troubleshooting</h2>
+
+      <div class="card">
+        <h3>Q: What video formats are supported?</h3>
+        <p><strong>A:</strong> MP4 and MOV formats are supported. For best results, use a screen recording at 720p or higher resolution.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q: How long should the video be?</h3>
+        <p><strong>A:</strong> Videos between 30 seconds and 2 minutes provide the best balance of coverage and analysis depth. Longer videos may take additional processing time.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q: Where are my analyses stored?</h3>
+        <p><strong>A:</strong> All analysis history is stored locally on your machine in a <code>data/db.json</code> file. No data is sent to external servers except during the active AI analysis session.</p>
+      </div>
+
+      <div class="card">
+        <h3>Q: Can I use AccessiMind offline?</h3>
+        <p><strong>A:</strong> The application interface works offline, but an internet connection is required to run AI analyses (as it uses Google's Gemini API).</p>
+      </div>
+
+      <div class="card">
+        <h3>Q: The analysis failed with an error. What should I do?</h3>
+        <p><strong>A:</strong> Check the following:</p>
+        <ol>
+          <li>Verify your API key is valid and entered correctly in Settings.</li>
+          <li>Ensure you have an active internet connection.</li>
+          <li>Try a shorter video file (under 2 minutes).</li>
+          <li>Use the <strong>"Retry"</strong> button to re-attempt the analysis.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>Q: Can I use a different AI model?</h3>
+        <p><strong>A:</strong> Yes. In Settings, select a model from the dropdown or enter a custom model ID. Use <strong>"Refresh"</strong> to fetch available models from Google.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         10. PRIVACY
+         ============================================================ -->
+    <section aria-labelledby="privacy">
+      <h2 id="privacy"><span class="heading-num">10.</span> Privacy &amp; Data Security</h2>
+      <div class="card">
+        <ul>
+          <li><strong>Local Storage:</strong> All settings, project data, and analysis history are stored locally on your machine.</li>
+          <li><strong>API Key Security:</strong> Your Gemini API key is stored locally and is only sent to Google's API endpoints during analysis.</li>
+          <li><strong>Video Processing:</strong> Videos are sent securely to the Gemini API for analysis and are not permanently stored by Google for training (subject to Google's Enterprise API terms).</li>
+          <li><strong>No Telemetry:</strong> AccessiMind does not collect usage analytics or telemetry data.</li>
+        </ul>
+      </div>
+      <div class="alert alert-success" role="note">
+        <span class="alert-icon" aria-hidden="true">✅</span>
+        <div>
+          <strong>Your data stays with you.</strong> AccessiMind is designed with a privacy-first architecture. All persistent data remains on your local machine.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <p>AccessiMind &mdash; AI-Powered Accessibility Analysis</p>
+    <p>Developed with ❤️ and AI</p>
+    <div class="wcag-badge" role="img" aria-label="WCAG 2.2 AA Conformance Badge">
+      ♿ WCAG 2.2 AA Conformance
+    </div>
+  </footer>
+
+  <!-- ================================================================
+       SCRIPTS (Progressive Enhancement)
+       ================================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      // High Contrast Toggle
+      var contrastBtn = document.getElementById('toggle-contrast');
+      if (contrastBtn) {
+        contrastBtn.addEventListener('click', function () {
+          var isActive = document.documentElement.classList.toggle('high-contrast');
+          contrastBtn.setAttribute('aria-pressed', String(isActive));
+          try {
+            localStorage.setItem('accessimind-hc', isActive ? '1' : '0');
+          } catch (e) { /* storage unavailable */ }
+        });
+
+        // Restore from localStorage
+        try {
+          if (localStorage.getItem('accessimind-hc') === '1') {
+            document.documentElement.classList.add('high-contrast');
+            contrastBtn.setAttribute('aria-pressed', 'true');
+          }
+        } catch (e) { /* storage unavailable */ }
+      }
+
+      // Print
+      var printBtn = document.getElementById('btn-print');
+      if (printBtn) {
+        printBtn.addEventListener('click', function () {
+          window.print();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

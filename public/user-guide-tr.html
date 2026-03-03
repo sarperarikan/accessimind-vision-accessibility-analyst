@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="AccessiMind Kullanım Kılavuzu — Web, Android ve iOS uygulamaları için yapay zeka destekli erişilebilirlik analiz aracını nasıl kullanacağınızı öğrenin." />
+    <meta name="author" content="AccessiMind Ekibi" />
+    <meta name="robots" content="index, follow" />
+    <title>AccessiMind — Kullanım Kılavuzu</title>
+
+    <!-- Google Fonts: Inter + Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* ================================================================
+       TASARIM TOKENLERİ (DESIGN TOKENS)
+       ================================================================ */
+        :root {
+            --color-bg: #0f172a;
+            --color-bg-alt: #1e293b;
+            --color-surface: #1e293b;
+            --color-surface-hover: #334155;
+            --color-border: #334155;
+            --color-text: #f1f5f9;
+            --color-text-secondary: #94a3b8;
+            --color-primary: #38bdf8;
+            --color-primary-dark: #0284c7;
+            --color-accent: #a78bfa;
+            --color-accent-light: #c4b5fd;
+            --color-success: #34d399;
+            --color-warning: #fbbf24;
+            --color-error: #f87171;
+            --color-info: #60a5fa;
+            --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Fira Code', 'Cascadia Code', monospace;
+            --radius-sm: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.25rem;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --focus-ring: 0 0 0 3px rgba(56, 189, 248, 0.5);
+            --max-width: 960px;
+        }
+
+        /* ================================================================
+       YÜKSEK KONTRAST MODU
+       ================================================================ */
+        html.high-contrast {
+            --color-bg: #000000;
+            --color-bg-alt: #111111;
+            --color-surface: #111111;
+            --color-surface-hover: #222222;
+            --color-border: #ffffff;
+            --color-text: #ffffff;
+            --color-text-secondary: #e0e0e0;
+            --color-primary: #00e5ff;
+            --color-accent: #d1c4e9;
+            --focus-ring: 0 0 0 4px #ffff00;
+        }
+
+        /* ================================================================
+       SIFIRLAMA & TEMEL
+       ================================================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 100%;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ================================================================
+       İÇERİĞE ATLA BAĞLANTISI
+       ================================================================ */
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 1rem;
+            background: var(--color-primary);
+            color: var(--color-bg);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            z-index: 10000;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: top var(--transition);
+        }
+
+        .skip-link:focus {
+            top: 1rem;
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        /* ================================================================
+       ODAK STİLLERİ
+       ================================================================ */
+        :focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+            border-radius: var(--radius-sm);
+        }
+
+        a:focus-visible {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        /* ================================================================
+       GÖRSEL OLARAK GİZLİ (EKRAN OKUYUCULARA ÖZEL)
+       ================================================================ */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ================================================================
+       DÜZEN
+       ================================================================ */
+        .page-wrapper {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+
+        /* ================================================================
+       BAŞLIK BÖLÜMÜ
+       ================================================================ */
+        .site-header {
+            background: linear-gradient(135deg, var(--color-bg-alt) 0%, var(--color-bg) 100%);
+            border-bottom: 1px solid var(--color-border);
+            padding: 2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+
+        .header-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* ================================================================
+       BUTONLAR
+       ================================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            line-height: 1.4;
+            min-height: 44px;
+            min-width: 44px;
+            justify-content: center;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            background: var(--color-surface-hover);
+            border-color: var(--color-primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border: none;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8125rem;
+        }
+
+        /* ================================================================
+       İÇİNDEKİLER
+       ================================================================ */
+        .toc {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .toc h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .toc ol {
+            list-style: none;
+            counter-reset: toc-counter;
+            padding-left: 0;
+        }
+
+        .toc li {
+            counter-increment: toc-counter;
+            margin-bottom: 0.5rem;
+        }
+
+        .toc li::before {
+            content: counter(toc-counter) ".";
+            color: var(--color-accent);
+            font-weight: 700;
+            font-family: var(--font-mono);
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .toc a {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition);
+            border-bottom: 1px solid transparent;
+        }
+
+        .toc a:hover,
+        .toc a:focus-visible {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        /* ================================================================
+       BAŞLIKLAR
+       ================================================================ */
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--color-border);
+            scroll-margin-top: 6rem;
+        }
+
+        h2 .heading-num {
+            color: var(--color-primary);
+            font-family: var(--font-mono);
+            margin-right: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-accent-light);
+            margin: 2rem 0 1rem;
+            scroll-margin-top: 6rem;
+        }
+
+        h4 {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        /* ================================================================
+       PARAGRAF & SATIR İÇİ
+       ================================================================ */
+        p {
+            margin-bottom: 1rem;
+            color: var(--color-text-secondary);
+        }
+
+        strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        a {
+            color: var(--color-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        a:hover {
+            color: var(--color-accent-light);
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            padding: 0.15rem 0.45rem;
+            font-size: 0.875em;
+            color: var(--color-primary);
+        }
+
+        /* ================================================================
+       KART BÖLÜMLER
+       ================================================================ */
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary), var(--shadow-md);
+        }
+
+        /* ================================================================
+       LİSTELER
+       ================================================================ */
+        ul,
+        ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--color-text-secondary);
+        }
+
+        li strong {
+            color: var(--color-text);
+        }
+
+        /* ================================================================
+       ADIM KARTLARI
+       ================================================================ */
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            margin-bottom: 0;
+        }
+
+        /* ================================================================
+       TABLOLAR
+       ================================================================ */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9375rem;
+        }
+
+        thead {
+            background: var(--color-bg);
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+            vertical-align: top;
+        }
+
+        tbody tr:hover {
+            background: var(--color-surface-hover);
+        }
+
+        caption {
+            caption-side: top;
+            text-align: left;
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            font-size: 1rem;
+        }
+
+        /* ================================================================
+       UYARI KUTULARI
+       ================================================================ */
+        .alert {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 1.5rem 0;
+            border-left: 4px solid transparent;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .alert-info {
+            background: rgba(96, 165, 250, 0.1);
+            border-left-color: var(--color-info);
+        }
+
+        .alert-info .alert-icon {
+            color: var(--color-info);
+        }
+
+        .alert-warning {
+            background: rgba(251, 191, 36, 0.1);
+            border-left-color: var(--color-warning);
+        }
+
+        .alert-warning .alert-icon {
+            color: var(--color-warning);
+        }
+
+        .alert-success {
+            background: rgba(52, 211, 153, 0.1);
+            border-left-color: var(--color-success);
+        }
+
+        .alert-success .alert-icon {
+            color: var(--color-success);
+        }
+
+        .alert-error {
+            background: rgba(248, 113, 113, 0.1);
+            border-left-color: var(--color-error);
+        }
+
+        .alert-error .alert-icon {
+            color: var(--color-error);
+        }
+
+        /* ================================================================
+       KLAVYE KISAYOLLARI
+       ================================================================ */
+        kbd {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            box-shadow: inset 0 -2px 0 var(--color-border);
+            color: var(--color-text);
+            white-space: nowrap;
+        }
+
+        /* ================================================================
+       ALTBILGI
+       ================================================================ */
+        .site-footer {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            border-top: 1px solid var(--color-border);
+            margin-top: 4rem;
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .site-footer a {
+            color: var(--color-primary);
+        }
+
+        .wcag-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--color-success);
+            font-size: 0.875rem;
+        }
+
+        /* ================================================================
+       DUYARLI TASARIM (RESPONSIVE)
+       ================================================================ */
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.375rem;
+            }
+
+            .step {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* ================================================================
+       AZALTILMIŞ HAREKETLİLİK
+       ================================================================ */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* ================================================================
+       YAZDIR
+       ================================================================ */
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+
+            .site-header,
+            .skip-link,
+            .header-actions,
+            .btn {
+                display: none;
+            }
+
+            .card {
+                border: 1px solid #ccc;
+                box-shadow: none;
+            }
+
+            a {
+                color: #000;
+                text-decoration: underline;
+            }
+
+            a[href]::after {
+                content: " (" attr(href) ")";
+                font-size: 0.8em;
+                color: #555;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- İçeriğe Atla Bağlantısı -->
+    <a href="#main-content" class="skip-link" id="skip-link">İçeriğe Atla</a>
+
+    <!-- ================================================================
+       BAŞLIK BÖLÜMÜ
+       ================================================================ -->
+    <header class="site-header" role="banner">
+        <div class="header-inner">
+            <div class="logo-group">
+                <div class="logo-icon" aria-hidden="true">A</div>
+                <span class="logo-text">AccessiMind</span>
+            </div>
+            <div class="header-actions">
+                <a href="user-guide-en.html" class="btn btn-sm" hreflang="en" aria-label="Switch to English version">
+                    🇬🇧 English
+                </a>
+                <button type="button" class="btn btn-sm" id="toggle-contrast" aria-pressed="false"
+                    aria-label="Yüksek Kontrast Modunu Aç/Kapat">
+                    ◐ Kontrast
+                </button>
+                <button type="button" class="btn btn-sm" id="btn-print" aria-label="Bu sayfayı yazdır">
+                    🖨 Yazdır
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================================================================
+       ANA İÇERİK
+       ================================================================ -->
+    <main id="main-content" class="page-wrapper" role="main">
+
+        <!-- Sayfa Başlığı -->
+        <h1>AccessiMind Kullanım Kılavuzu</h1>
+        <p style="font-size: 1.125rem; color: var(--color-text); margin-bottom: 0.25rem;">
+            <strong>Web, Android &amp; iOS için Yapay Zeka Destekli Erişilebilirlik Analizi</strong>
+        </p>
+        <p style="font-size: 0.875rem;">Sürüm 1.0 &middot; Son güncelleme: Mart 2026 &middot; WCAG 2.2 AA Uyumluluğu</p>
+
+        <!-- ============================================================
+         İÇİNDEKİLER
+         ============================================================ -->
+        <nav class="toc" aria-labelledby="toc-heading">
+            <h2 id="toc-heading">İçindekiler</h2>
+            <ol>
+                <li><a href="#about">AccessiMind Hakkında</a></li>
+                <li><a href="#getting-started">Başlangıç</a></li>
+                <li><a href="#interface">Arayüz Genel Bakış</a></li>
+                <li><a href="#analysis">Analiz Çalıştırma</a></li>
+                <li><a href="#results">Sonuçları Anlama</a></li>
+                <li><a href="#projects">Proje Yönetimi</a></li>
+                <li><a href="#settings">Ayarlar &amp; Yapılandırma</a></li>
+                <li><a href="#keyboard">Klavye Kısayolları &amp; Erişilebilirlik</a></li>
+                <li><a href="#faq">Sıkça Sorulan Sorular</a></li>
+                <li><a href="#privacy">Gizlilik &amp; Veri Güvenliği</a></li>
+            </ol>
+        </nav>
+
+        <!-- ============================================================
+         1. HAKKINDA
+         ============================================================ -->
+        <section aria-labelledby="about">
+            <h2 id="about"><span class="heading-num">1.</span> AccessiMind Hakkında</h2>
+            <div class="card">
+                <p>
+                    <strong>AccessiMind</strong>, web, Android ve iOS uygulamalarının ekran kayıtlarını erişilebilirlik
+                    uyumluluğu açısından analiz eden akıllı bir masaüstü uygulamasıdır. Google Gemini yapay zeka
+                    modelleri ile desteklenen uygulama, sanal bir erişilebilirlik uzmanı gibi çalışarak WCAG
+                    ihlallerini,
+                    kullanıcı deneyimi sorunlarını ve gezinme engellerini otomatik olarak tespit eder.
+                </p>
+                <h3>Temel Özellikler</h3>
+                <ul>
+                    <li><strong>Yapay Zeka Görsel Analizi:</strong> Ekran kayıtlarını (MP4/MOV) yükleyin ve
+                        erişilebilirlik sorunları hakkında uzman düzeyinde anında geri bildirim alın.</li>
+                    <li><strong>Çoklu Platform Kuralları:</strong>
+                        <ul>
+                            <li>🌐 <strong>Web:</strong> WCAG 2.1/2.2 AA Uyumluluk analizi</li>
+                            <li>🤖 <strong>Android:</strong> Material Design Erişilebilirlik doğrulaması</li>
+                            <li>🍎 <strong>iOS:</strong> İnsan Arayüzü Yönergeleri (HIG) erişilebilirlik kontrolleri
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Akıllı Raporlama:</strong> Önem derecelerine (Kritik, Yüksek, Orta, Düşük) göre
+                        ayrıntılı Jira biletleri oluşturur.</li>
+                    <li><strong>Yapay Zeka Sohbet:</strong> Herhangi bir bulgu hakkında yapay zeka erişilebilirlik
+                        uzmanına takip soruları sorun.</li>
+                    <li><strong>Proje Yönetimi:</strong> Analizleri projelere düzenleyerek ilerlemeyi zaman içinde
+                        izleyin.</li>
+                    <li><strong>İki Dilli Arayüz:</strong> Tam Türkçe ve İngilizce arayüz desteği.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         2. BAŞLANGIÇ
+         ============================================================ -->
+        <section aria-labelledby="getting-started">
+            <h2 id="getting-started"><span class="heading-num">2.</span> Başlangıç</h2>
+
+            <h3>Sistem Gereksinimleri</h3>
+            <div class="card">
+                <ul>
+                    <li><strong>İşletim Sistemi:</strong> Windows 10/11 (64-bit)</li>
+                    <li><strong>RAM:</strong> En az 4 GB (8 GB önerilir)</li>
+                    <li><strong>Disk Alanı:</strong> 500 MB boş alan</li>
+                    <li><strong>İnternet:</strong> Yapay zeka analizi için gereklidir (Gemini API)</li>
+                </ul>
+            </div>
+
+            <h3>Kurulum &amp; İlk Çalıştırma</h3>
+            <div class="step" role="group" aria-label="Adım 1">
+                <div class="step-num" aria-hidden="true">1</div>
+                <div class="step-content">
+                    <h4>Uygulamayı İndirin</h4>
+                    <p>Taşınabilir <code>AccessiMind.exe</code> dosyasını indirin. Kurulum gerekmez — sadece
+                        çalıştırılabilir dosyayı çalıştırın.</p>
+                </div>
+            </div>
+            <div class="step" role="group" aria-label="Adım 2">
+                <div class="step-num" aria-hidden="true">2</div>
+                <div class="step-content">
+                    <h4>Gemini API Anahtarı Alın</h4>
+                    <p>Ücretsiz bir API anahtarı oluşturmak için <a href="https://ai.google.dev/" target="_blank"
+                            rel="noopener noreferrer">Google AI Studio</a> adresini ziyaret edin. Bu anahtar yapay zeka
+                        analiz motorunu çalıştırır.</p>
+                </div>
+            </div>
+            <div class="step" role="group" aria-label="Adım 3">
+                <div class="step-num" aria-hidden="true">3</div>
+                <div class="step-content">
+                    <h4>Ayarları Yapılandırın</h4>
+                    <p><strong>Ayarlar</strong> sekmesine gidin, API anahtarınızı girin, tercih ettiğiniz yapay zeka
+                        modelini seçin ve kaydedin.</p>
+                </div>
+            </div>
+            <div class="step" role="group" aria-label="Adım 4">
+                <div class="step-num" aria-hidden="true">4</div>
+                <div class="step-content">
+                    <h4>Hazırsınız!</h4>
+                    <p>Bir ekran kaydı yükleyin ve ilk erişilebilirlik analizinizi başlatın.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         3. ARAYÜZ GENEL BAKIŞ
+         ============================================================ -->
+        <section aria-labelledby="interface">
+            <h2 id="interface"><span class="heading-num">3.</span> Arayüz Genel Bakış</h2>
+            <div class="card">
+                <p>AccessiMind, beş ana bölümden oluşan sekmeli bir navigasyona sahiptir:</p>
+                <div class="table-wrapper">
+                    <table>
+                        <caption class="sr-only">Ana gezinme sekmeleri ve açıklamaları</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Sekme</th>
+                                <th scope="col">Simge</th>
+                                <th scope="col">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Erişilebilirlik Uzmanı</strong></td>
+                                <td aria-hidden="true">🤖</td>
+                                <td>Ana analiz çalışma alanı — video yükleme, platform seçme, yapay zeka analizi
+                                    çalıştırma ve sonuçları görüntüleme.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Projeler</strong></td>
+                                <td aria-hidden="true">📁</td>
+                                <td>Erişilebilirlik analizlerinizi uygulama veya özelliğe göre düzenlemek için projeler
+                                    oluşturun ve yönetin.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Geçmiş Analizler</strong></td>
+                                <td aria-hidden="true">📜</td>
+                                <td>Tüm geçmiş analizlerin geçmişini görüntüleyin, bulguları yeniden inceleyin, dışa
+                                    aktarın veya silin.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ayarlar</strong></td>
+                                <td aria-hidden="true">⚙️</td>
+                                <td>API anahtarı, yapay zeka modeli, dil, çıktı ayrıntı düzeyi ve erişilebilirlik
+                                    tercihlerini yapılandırın.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yardım</strong></td>
+                                <td aria-hidden="true">❓</td>
+                                <td>Hızlı başlangıç rehberi ve referans bilgileri.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         4. ANALİZ ÇALIŞTIRMA
+         ============================================================ -->
+        <section aria-labelledby="analysis">
+            <h2 id="analysis"><span class="heading-num">4.</span> Analiz Çalıştırma</h2>
+
+            <h3>Adım Adım İş Akışı</h3>
+
+            <div class="step" role="group" aria-label="Analiz Adımı 1">
+                <div class="step-num" aria-hidden="true">1</div>
+                <div class="step-content">
+                    <h4>Hedef Platformu Seçin</h4>
+                    <p>Platform seçiciden <strong>Web</strong>, <strong>Android</strong> veya <strong>iOS</strong>
+                        seçin. Her platform, özel erişilebilirlik kurallarını ve uzman istemlerini yükler.</p>
+                </div>
+            </div>
+
+            <div class="step" role="group" aria-label="Analiz Adımı 2">
+                <div class="step-num" aria-hidden="true">2</div>
+                <div class="step-content">
+                    <h4>Ekran Kaydını Yükleyin</h4>
+                    <p>Bir video dosyasını (MP4, MOV) yükleme alanına sürükleyip bırakın veya göz atmak için tıklayın.
+                        Video, analiz edilmesini istediğiniz uygulamanın kullanıcı arayüzünü ve etkileşimlerini
+                        yakalamalıdır.</p>
+                </div>
+            </div>
+
+            <div class="step" role="group" aria-label="Analiz Adımı 3">
+                <div class="step-num" aria-hidden="true">3</div>
+                <div class="step-content">
+                    <h4>Projeye Atayın (İsteğe Bağlı)</h4>
+                    <p>Açılır menüden mevcut bir proje seçin veya bağımsız analiz için "Proje Yok" olarak bırakın.</p>
+                </div>
+            </div>
+
+            <div class="step" role="group" aria-label="Analiz Adımı 4">
+                <div class="step-num" aria-hidden="true">4</div>
+                <div class="step-content">
+                    <h4>Uzman Raporu Oluşturun</h4>
+                    <p><strong>"Uzman Raporu Oluştur"</strong> düğmesine tıklayın. Yapay zeka videonuzu beş aşamada
+                        işleyecektir:</p>
+                    <ol>
+                        <li>Video hazırlanıyor</li>
+                        <li>Yapay zeka motoruna yükleniyor</li>
+                        <li>Görsel öğeler analiz ediliyor</li>
+                        <li>Uzman görüşü oluşturuluyor</li>
+                        <li>Jira raporu hazırlanıyor</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="alert alert-info" role="note">
+                <span class="alert-icon" aria-hidden="true">ℹ️</span>
+                <div>
+                    <strong>İpucu:</strong> En iyi sonuçlar için gezinme, form doldurma, düğme tıklama ve kaydırma gibi
+                    etkileşimleri kaydedin. 30–90 saniyelik bir video genellikle en eyleme geçirilebilir sonuçları
+                    verir.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         5. SONUÇLARI ANLAMA
+         ============================================================ -->
+        <section aria-labelledby="results">
+            <h2 id="results"><span class="heading-num">5.</span> Sonuçları Anlama</h2>
+            <div class="card">
+                <p>Her analiz, aşağıdaki bilgileri içeren Jira formatında bir bilet oluşturur:</p>
+                <ul>
+                    <li><strong>Başlık:</strong> Bulgu için kısa ve öz bir ad.</li>
+                    <li><strong>Açıklama:</strong> Erişilebilirlik sorununun ayrıntılı açıklaması.</li>
+                    <li><strong>WCAG Kriterleri:</strong> İhlal edilen belirli WCAG başarı kriterleri.</li>
+                    <li><strong>Uyumluluk Düzeyi:</strong> WCAG uyumluluk düzeyi (A, AA, AAA).</li>
+                    <li><strong>Gözlemlenen Sonuçlar:</strong> Yapay zekanın videoda tespit ettiği durum.</li>
+                    <li><strong>Beklenen Sonuçlar:</strong> Doğru, erişilebilir davranış.</li>
+                    <li><strong>Test Adımları:</strong> Sorunu yeniden oluşturmak ve doğrulamak için adımlar.</li>
+                    <li><strong>Etki Düzeyi:</strong> Kritik, Yüksek, Orta veya Düşük.</li>
+                    <li><strong>Çözüm Önceliği:</strong> Önerilen düzeltme öncelik sıralaması.</li>
+                </ul>
+
+                <h3>Önem Dereceleri</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <caption class="sr-only">Önem dereceleri ve anlamları</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Önem Derecesi</th>
+                                <th scope="col">Anlamı</th>
+                                <th scope="col">Örnek</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style="color: var(--color-error);">Kritik</strong></td>
+                                <td>Engelli kullanıcılar için temel işlevselliği engeller</td>
+                                <td>Form gönder düğmesi klavye ile erişilemez</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--color-warning);">Yüksek</strong></td>
+                                <td>Önemli engel; geçici çözüm mevcut olabilir</td>
+                                <td>Bilgilendirici görsellerde alternatif metin eksik</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--color-info);">Orta</strong></td>
+                                <td>Orta düzeyde etki; kullanıcı deneyimini etkiler</td>
+                                <td>Yetersiz renk kontrast oranı</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--color-text-secondary);">Düşük</strong></td>
+                                <td>Küçük sorun; en iyi uygulama önerisi</td>
+                                <td>İçeriğe atlama bağlantısı eksik</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3>Dışa Aktarma &amp; Paylaşma</h3>
+            <div class="card">
+                <ul>
+                    <li><strong>Markdown Olarak Kopyala:</strong> Jira biletinin tamamını Jira, Confluence veya GitHub
+                        Issues'a yapıştırmak için Markdown formatında kopyalayın.</li>
+                    <li><strong>Metin Olarak İndir:</strong> Raporu çevrimdışı inceleme için <code>.txt</code> dosyası
+                        olarak indirin.</li>
+                    <li><strong>Yapay Zeka Sohbet:</strong> Raporun altındaki sohbet panelinde herhangi bir bulgu
+                        hakkında takip soruları sorun.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         6. PROJE YÖNETİMİ
+         ============================================================ -->
+        <section aria-labelledby="projects">
+            <h2 id="projects"><span class="heading-num">6.</span> Proje Yönetimi</h2>
+            <div class="card">
+                <p>Projeler, erişilebilirlik analizlerinizi uygulama, özellik veya sprint bazında düzenlemenize yardımcı
+                    olur.</p>
+                <h3>Proje Oluşturma</h3>
+                <ol>
+                    <li><strong>Projeler</strong> sekmesine gidin.</li>
+                    <li><strong>"Yeni Proje"</strong> düğmesine tıklayın.</li>
+                    <li>Bir proje adı (örn. "E-ticaret Mobil Uygulaması") ve isteğe bağlı bir açıklama girin.</li>
+                    <li><strong>"Oluştur"</strong> düğmesine tıklayın.</li>
+                </ol>
+                <h3>Proje Yönetimi</h3>
+                <ul>
+                    <li><strong>Bulguları Görüntüle:</strong> İlgili tüm analiz bulgularını görmek için proje kartına
+                        tıklayın.</li>
+                    <li><strong>Projeyi Düzenle:</strong> Ad veya açıklamayı güncellemek için düzenleme düğmesini
+                        kullanın.</li>
+                    <li><strong>Projeyi Sil:</strong> Bir projeyi ve ilişkili tüm bulguları kaldırın (onay diyaloğu
+                        ile).</li>
+                </ul>
+                <h3>Analizleri Projelere Atama</h3>
+                <p><strong>Erişilebilirlik Uzmanı</strong> sekmesinden analiz çalıştırırken, başlamadan önce açılır
+                    menüden bir proje seçin. Sonuçlar otomatik olarak o projeye bağlanacaktır.</p>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         7. AYARLAR
+         ============================================================ -->
+        <section aria-labelledby="settings">
+            <h2 id="settings"><span class="heading-num">7.</span> Ayarlar &amp; Yapılandırma</h2>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table>
+                        <caption class="sr-only">Mevcut ayarlar ve açıklamaları</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Ayar</th>
+                                <th scope="col">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Dil</strong></td>
+                                <td>Arayüzü Türkçe (TR) ve İngilizce (EN) arasında değiştirin. Tüm etiketler, menüler ve
+                                    raporlar seçilen dile uyum sağlar.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gemini API Anahtarı</strong></td>
+                                <td>Google AI Studio'dan aldığınız kişisel API anahtarınız. Analiz için gereklidir.
+                                    Yerel olarak saklanır ve başka bir yere iletilmez.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yapay Zeka Modeli</strong></td>
+                                <td>Kullanılacak Gemini modelini seçin (örn. Gemini 3.0 Flash, Gemini 3.0 Pro). Özel bir
+                                    model kimliği de girebilirsiniz.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Çıktı Ayrıntı Düzeyi</strong></td>
+                                <td>
+                                    <ul style="margin-bottom:0">
+                                        <li><strong>Özet (Kısa):</strong> Bulguların kısa, üst düzey özeti.</li>
+                                        <li><strong>Normal (Dengeli):</strong> Eyleme geçirilebilir önerilerle dengeli
+                                            detay.</li>
+                                        <li><strong>Detaylı (Eğitici &amp; Kapsamlı):</strong> Derin açıklamalarla
+                                            eğitici, kapsamlı raporlar.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yüksek Kontrast Modu</strong></td>
+                                <td>Geliştirilmiş okunabilirlik için daha yüksek kontrastlı renk şemasını etkinleştirir
+                                    (WCAG AAA düzeyi kontrast).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="alert alert-warning" role="note">
+                <span class="alert-icon" aria-hidden="true">⚠️</span>
+                <div>
+                    <strong>Önemli:</strong> Değişiklik yaptıktan sonra her zaman <strong>"Kaydet"</strong> düğmesine
+                    tıklayın. Ayarlar makinenizde yerel olarak saklanır.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         8. KLAVYE KISAYOLLARI & ERİŞİLEBİLİRLİK
+         ============================================================ -->
+        <section aria-labelledby="keyboard">
+            <h2 id="keyboard"><span class="heading-num">8.</span> Klavye Kısayolları &amp; Erişilebilirlik</h2>
+            <div class="card">
+                <p>AccessiMind, WCAG 2.2 AA uyumluluğu ile tasarlanmıştır. Tüm özellikler klavye ve ekran okuyucular
+                    aracılığıyla tamamen erişilebilirdir.</p>
+
+                <h3>Klavye Gezinme</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <caption class="sr-only">Klavye kısayolları referansı</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Eylem</th>
+                                <th scope="col">Kısayol</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ana içeriğe atla</td>
+                                <td><kbd>Tab</kbd> (ilk öğe odağı)</td>
+                            </tr>
+                            <tr>
+                                <td>Sekmeler arasında gezinme</td>
+                                <td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+                            </tr>
+                            <tr>
+                                <td>Sekme seçme</td>
+                                <td><kbd>Enter</kbd> veya <kbd>Space</kbd></td>
+                            </tr>
+                            <tr>
+                                <td>Liste/kart içinde gezinme</td>
+                                <td><kbd>Ok Tuşları</kbd></td>
+                            </tr>
+                            <tr>
+                                <td>Modal/diyalogları kapatma</td>
+                                <td><kbd>Escape</kbd></td>
+                            </tr>
+                            <tr>
+                                <td>Form gönderme</td>
+                                <td><kbd>Enter</kbd></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Ekran Okuyucu Desteği</h3>
+                <ul>
+                    <li>Tüm etkileşimli öğeler açıklayıcı <code>aria-label</code> niteliklerine sahiptir.</li>
+                    <li>Canlı bölgeler (<code>aria-live</code>) analiz ilerlemesini ve durum değişikliklerini duyurur.
+                    </li>
+                    <li>Anlamsal HTML5 yer işaretleri (<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>,
+                        <code>&lt;header&gt;</code>) her yerde kullanılır.</li>
+                    <li>Tüm diyaloglar ve modaller için odak tuzakları uygulanmıştır.</li>
+                </ul>
+
+                <h3>Görsel Erişilebilirlik</h3>
+                <ul>
+                    <li><strong>Yüksek Kontrast Modu:</strong> Gelişmiş kontrasta ihtiyaç duyan kullanıcılar için
+                        Ayarlar'dan açılıp kapatılabilir.</li>
+                    <li><strong>Odak Göstergeleri:</strong> Tüm etkileşimli öğeler görünür bir
+                        <code>:focus-visible</code> halkası gösterir.</li>
+                    <li><strong>Ölçeklenebilir Metin:</strong> Tüm metin, <code>rem</code> birimleri kullanır ve
+                        tarayıcı yakınlaştırma ayarlarıyla ölçeklenir.</li>
+                    <li><strong>Azaltılmış Hareketlilik:</strong> Animasyonlar, <code>prefers-reduced-motion</code>
+                        tercihlerine saygı duyar.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         9. SIKÇA SORULAN SORULAR
+         ============================================================ -->
+        <section aria-labelledby="faq">
+            <h2 id="faq"><span class="heading-num">9.</span> Sıkça Sorulan Sorular</h2>
+
+            <div class="card">
+                <h3>S: Hangi video formatları destekleniyor?</h3>
+                <p><strong>C:</strong> MP4 ve MOV formatları desteklenmektedir. En iyi sonuçlar için 720p veya daha
+                    yüksek çözünürlükte ekran kaydı kullanın.</p>
+            </div>
+
+            <div class="card">
+                <h3>S: Video ne kadar uzun olmalı?</h3>
+                <p><strong>C:</strong> 30 saniye ile 2 dakika arasındaki videolar, kapsam ve analiz derinliği açısından
+                    en iyi dengeyi sağlar. Daha uzun videolar ek işleme süresi gerektirebilir.</p>
+            </div>
+
+            <div class="card">
+                <h3>S: Analizlerim nerede saklanıyor?</h3>
+                <p><strong>C:</strong> Tüm analiz geçmişi, makinenizde yerel olarak <code>data/db.json</code> dosyasında
+                    saklanır. Aktif yapay zeka analiz oturumu dışında harici sunuculara veri gönderilmez.</p>
+            </div>
+
+            <div class="card">
+                <h3>S: AccessiMind'ı çevrimdışı kullanabilir miyim?</h3>
+                <p><strong>C:</strong> Uygulama arayüzü çevrimdışı çalışır, ancak yapay zeka analizleri çalıştırmak için
+                    internet bağlantısı gereklidir (Google Gemini API kullandığı için).</p>
+            </div>
+
+            <div class="card">
+                <h3>S: Analiz bir hata ile başarısız oldu. Ne yapmalıyım?</h3>
+                <p><strong>C:</strong> Aşağıdakileri kontrol edin:</p>
+                <ol>
+                    <li>API anahtarınızın geçerli olduğunu ve Ayarlar'da doğru girildiğini doğrulayın.</li>
+                    <li>Aktif bir internet bağlantınız olduğundan emin olun.</li>
+                    <li>Daha kısa bir video dosyası deneyin (2 dakikanın altında).</li>
+                    <li>Analizi yeniden denemek için <strong>"Yeniden Dene"</strong> düğmesini kullanın.</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>S: Farklı bir yapay zeka modeli kullanabilir miyim?</h3>
+                <p><strong>C:</strong> Evet. Ayarlar'da açılır menüden bir model seçin veya özel bir model kimliği
+                    girin. Google'dan mevcut modelleri getirmek için <strong>"Yenile"</strong> düğmesini kullanın.</p>
+            </div>
+        </section>
+
+        <!-- ============================================================
+         10. GİZLİLİK
+         ============================================================ -->
+        <section aria-labelledby="privacy">
+            <h2 id="privacy"><span class="heading-num">10.</span> Gizlilik &amp; Veri Güvenliği</h2>
+            <div class="card">
+                <ul>
+                    <li><strong>Yerel Depolama:</strong> Tüm ayarlar, proje verileri ve analiz geçmişi makinenizde yerel
+                        olarak saklanır.</li>
+                    <li><strong>API Anahtarı Güvenliği:</strong> Gemini API anahtarınız yerel olarak saklanır ve
+                        yalnızca analiz sırasında Google API uç noktalarına gönderilir.</li>
+                    <li><strong>Video İşleme:</strong> Videolar analiz için güvenli bir şekilde Gemini API'sine
+                        gönderilir ve Google tarafından eğitim amacıyla kalıcı olarak saklanmaz (Google'ın Kurumsal API
+                        koşullarına tabidir).</li>
+                    <li><strong>Telemetri Yok:</strong> AccessiMind kullanım analitiği veya telemetri verisi toplamaz.
+                    </li>
+                </ul>
+            </div>
+            <div class="alert alert-success" role="note">
+                <span class="alert-icon" aria-hidden="true">✅</span>
+                <div>
+                    <strong>Verileriniz sizinle kalır.</strong> AccessiMind, gizlilik öncelikli bir mimari ile
+                    tasarlanmıştır. Tüm kalıcı veriler yerel makinenizde kalır.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================================================================
+       ALTBILGI
+       ================================================================ -->
+    <footer class="site-footer" role="contentinfo">
+        <p>AccessiMind — Yapay Zeka Destekli Erişilebilirlik Analizi</p>
+        <p>❤️ ve Yapay Zeka ile geliştirilmiştir</p>
+        <div class="wcag-badge" role="img" aria-label="WCAG 2.2 AA Uyumluluk Rozeti">
+            ♿ WCAG 2.2 AA Uyumluluğu
+        </div>
+    </footer>
+
+    <!-- ================================================================
+       BETİKLER (Aşamalı İyileştirme)
+       ================================================================ -->
+    <script>
+        (function () {
+            'use strict';
+
+            // Yüksek Kontrast Aç/Kapat
+            var contrastBtn = document.getElementById('toggle-contrast');
+            if (contrastBtn) {
+                contrastBtn.addEventListener('click', function () {
+                    var isActive = document.documentElement.classList.toggle('high-contrast');
+                    contrastBtn.setAttribute('aria-pressed', String(isActive));
+                    try {
+                        localStorage.setItem('accessimind-hc', isActive ? '1' : '0');
+                    } catch (e) { /* depolama kullanılamıyor */ }
+                });
+
+                // localStorage'dan geri yükle
+                try {
+                    if (localStorage.getItem('accessimind-hc') === '1') {
+                        document.documentElement.classList.add('high-contrast');
+                        contrastBtn.setAttribute('aria-pressed', 'true');
+                    }
+                } catch (e) { /* depolama kullanılamıyor */ }
+            }
+
+            // Yazdır
+            var printBtn = document.getElementById('btn-print');
+            if (printBtn) {
+                printBtn.addEventListener('click', function () {
+                    window.print();
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>
